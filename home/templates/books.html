@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<form action="{% url "create" %}" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{form.as_p}}
+  <button type="submit" class="btn btn-primary">submit</button>
+  <a href={% url "logout" %} class="btn btn-danger btn-lg">logout</a>
+</form>
+{% else %}
+<a href={% url "login" %} class="btn btn-success btn-lg">login</a>
+{% endif %}
+
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">S.N</th>
+        <th scope="col">NAME</th>
+        <th scope="col">DESCRIPTION</th>
+        <th scope="col">IMAGE</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for book in books %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td><a href="{% url "update" book.id %}">{{book.book_name|capfirst}}</a></td>
+                <td>{{book.book_desc}}</td>
+                <td> {% if book.book_image %}
+                  <img src={{book.book_image.url}} width='100px',height='100px'/>
+                  {% else %}
+                  <p>No Image Available</p>
+                  {% endif %}
+                </td> 
+                <td>
+                  <a href={% url 'update' book.id %}
+                  class="btn btn-primary mt-2">Update</a>
+                  <a href={% url 'delete' book.id %}
+                  class="btn btn-danger mt-2">Delete</a>
+                </td>
+        {% endfor %}
+    </tbody>
+  </table>
+{% endblock content %}
+
